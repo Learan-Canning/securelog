@@ -47,7 +47,7 @@ DEBUG = config('DEBUG', default=True, cast=bool)
 # Configured for both local development and Heroku deployment
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1,.herokuapp.com'
+    default='localhost,127.0.0.1,.herokuapp.com,*'
 ).split(',')
 
 
