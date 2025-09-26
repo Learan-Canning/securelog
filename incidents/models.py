@@ -1,78 +1,147 @@
+# Django imports for database models and utilities
 from django.db import models
-from django.contrib.auth.models import User
-from django.utils import timezone
-from django.urls import reverse
+from django.contrib.auth.models import User  # Built-in Django User model
+from django.utils import timezone  # Django's timezone utilities
+from django.urls import reverse  # For generating URLs from view names
 
 
 class IncidentType(models.Model):
     """
-    Model for categorizing different types of incidents
+    Model for categorizing different types of incidents (e.g., Safety, Security, Equipment).
+    
+    This model allows administrators to create categories for organizing incidents,
+    making it easier to filter and analyze incident data by type.
+    
+    Fields:
+        name: Unique name for the incident type (e.g., "Safety Incident")
+        description: Optional detailed description of what this type covers
+        color_code: Hex color code for visual representation in the UI
+        created_at: Timestamp when this type was created
     """
-    name = models.CharField(max_length=100, unique=True)
-    description = models.TextField(blank=True)
-    color_code = models.CharField(max_length=7, default='#007bff')  # Hex color
-    created_at = models.DateTimeField(auto_now_add=True)
+    
+    # CharField stores short text up to 100 characters, unique=True prevents duplicates
+    name = models.CharField(
+        max_length=100, 
+        unique=True,
+        help_text="Unique name for this incident type"
+    )
+    
+    # TextField allows longer text, blank=True means it's optional in forms
+    description = models.TextField(
+        blank=True,
+        help_text="Detailed description of what this incident type covers"
+    )
+    
+    # Store hex color code for UI theming (e.g., #FF0000 for red)
+    color_code = models.CharField(
+        max_length=7, 
+        default='#007bff',  # Bootstrap primary blue as default
+        help_text="Hex color code for visual representation (e.g., #FF0000)"
+    )
+    
+    # auto_now_add=True automatically sets this when the record is first created
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        help_text="When this incident type was created"
+    )
 
     class Meta:
-        ordering = ['name']
+        """
+        Meta class defines metadata for the model
+        """
+        ordering = ['name']  # Default ordering by name alphabetically
+        verbose_name = "Incident Type"
+        verbose_name_plural = "Incident Types"
 
     def __str__(self):
+        """
+        String representation of the model - what appears in admin and dropdowns
+        """
         return self.name
 
 
 class IncidentReport(models.Model):
     """
-    Custom model for incident reports - meets assessment requirement
-    for original custom model with associated functionality
+    MAIN CUSTOM MODEL - Core incident reporting functionality
+    
+    This is the primary model for the SecureLog application and meets the assessment
+    requirement for an "original custom model with associated functionality."
+    
+    This model handles:
+    - Incident documentation and tracking
+    - Workflow management (draft → submitted → resolved → closed)
+    - Severity classification for prioritization
+    - People and location tracking
+    - File attachments and follow-up actions
+    
+    Business Logic:
+    - Staff can create incident reports
+    - Managers can assign and update status
+    - Automatic timestamp tracking for audit trail
+    - Property methods for UI display and business rules
     """
     
-    # Severity choices
+    # CHOICE FIELDS: These create dropdown options in forms and ensure data consistency
+    
+    # Severity levels help prioritize incidents (critical = immediate attention)
     SEVERITY_CHOICES = [
-        ('low', 'Low'),
-        ('medium', 'Medium'),
-        ('high', 'High'),
-        ('critical', 'Critical'),
+        ('low', 'Low'),           # Minor issues, no immediate danger
+        ('medium', 'Medium'),     # Standard workplace incidents
+        ('high', 'High'),         # Serious incidents requiring quick response
+        ('critical', 'Critical'), # Emergency situations, immediate action needed
     ]
     
-    # Status choices
+    # Status workflow tracks incident lifecycle from creation to closure
     STATUS_CHOICES = [
-        ('draft', 'Draft'),
-        ('submitted', 'Submitted'),
-        ('under_review', 'Under Review'),
-        ('investigating', 'Investigating'),
-        ('resolved', 'Resolved'),
-        ('closed', 'Closed'),
+        ('draft', 'Draft'),                    # Being written, not yet submitted
+        ('submitted', 'Submitted'),            # Submitted for review
+        ('under_review', 'Under Review'),      # Manager reviewing details
+        ('investigating', 'Investigating'),    # Active investigation in progress
+        ('resolved', 'Resolved'),              # Solution implemented
+        ('closed', 'Closed'),                  # Completed and archived
     ]
 
-    # Basic Information
+    # === BASIC INFORMATION FIELDS ===
+    # These fields capture the core details of what happened
+    
+    # Title: Short summary that appears in lists and reports
     title = models.CharField(
-        max_length=200,
-        help_text="Brief description of the incident"
+        max_length=200,  # Reasonable limit for titles
+        help_text="Brief description of the incident (e.g., 'Slip and fall in cafeteria')"
     )
     
+    # Foreign Key relationship to IncidentType model
+    # PROTECT prevents deletion of IncidentType if reports exist
     incident_type = models.ForeignKey(
         IncidentType,
-        on_delete=models.PROTECT,
-        help_text="Category of incident"
+        on_delete=models.PROTECT,  # Protects data integrity
+        help_text="Category of incident (Safety, Security, Equipment, etc.)"
     )
     
+    # TextField allows unlimited text for detailed descriptions
     description = models.TextField(
-        help_text="Detailed description of what happened"
+        help_text="Detailed description of what happened, who was involved, and circumstances"
     )
     
-    # Location and Time
+    # === LOCATION AND TIME TRACKING ===
+    # Critical for incident analysis and emergency response
+    
+    # Physical location where incident occurred
     location = models.CharField(
         max_length=200,
-        help_text="Where did this incident occur?"
+        help_text="Specific location (e.g., 'Building A, Floor 2, Conference Room 205')"
     )
     
+    # When the actual incident happened (user-entered)
     date_occurred = models.DateTimeField(
-        help_text="When did this incident happen?"
+        help_text="Exact date and time when the incident occurred"
     )
     
+    # When the report was created (automatically set)
+    # timezone.now ensures proper timezone handling
     date_reported = models.DateTimeField(
-        default=timezone.now,
-        help_text="When was this incident reported?"
+        default=timezone.now,  # Auto-populates with current timestamp
+        help_text="When this report was submitted to the system"
     )
     
     # Classification

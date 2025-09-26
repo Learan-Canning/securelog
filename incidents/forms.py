@@ -1,12 +1,43 @@
-from django import forms
-from django.contrib.auth.models import User
-from .models import IncidentReport, IncidentComment
+"""
+FORMS.PY - Django Forms for User Input and Validation
+
+This file defines forms that handle user input, validation, and data processing.
+Django forms provide automatic HTML generation, validation, and security features.
+
+Key Concepts:
+- ModelForm: Automatically generates form fields from model fields
+- Form Validation: Ensures data integrity before saving to database
+- Widget Customization: Controls how form fields appear in HTML
+- CSRF Protection: Automatically included for security
+
+Assessment Requirements Met:
+- LO2.4: Forms with validation for creating and editing models
+- LO1.1: User-friendly interfaces with clear labels and inputs
+"""
+
+# === DJANGO IMPORTS ===
+from django import forms  # Django's form handling framework
+from django.contrib.auth.models import User  # Django's built-in User model
+
+# === LOCAL IMPORTS ===
+from .models import IncidentReport, IncidentComment  # Our custom models
 
 
 class IncidentReportForm(forms.ModelForm):
     """
-    Form for creating and editing incident reports
-    Uses crispy forms for better styling
+    MAIN INCIDENT REPORT FORM - Core functionality for incident creation/editing
+    
+    This ModelForm automatically generates form fields based on the IncidentReport model.
+    It handles validation, HTML generation, and data processing for incident reports.
+    
+    Features:
+    - Automatic field generation from model
+    - Custom widgets for better user experience
+    - Field validation and required field enforcement
+    - Bootstrap CSS classes for styling
+    - Helpful placeholder text and labels
+    
+    Security: Django automatically includes CSRF protection
     """
     
     class Meta:

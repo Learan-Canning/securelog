@@ -1,38 +1,97 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib import messages
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, TemplateView
-from django.urls import reverse_lazy
-from django.http import JsonResponse
-from django.db.models import Q, Count
-from .models import IncidentReport, IncidentType, IncidentComment
-from .forms import IncidentReportForm, IncidentCommentForm
+"""
+VIEWS.PY - Django Views for Incident Reporting System
+
+This file contains all the view logic for handling HTTP requests and responses.
+Django views are Python functions or classes that receive HTTP requests and return responses.
+
+Key Concepts:
+- Class-Based Views (CBVs): Reusable view classes for common patterns
+- Function-Based Views (FBVs): Custom functions for specific logic
+- Mixins: Add functionality to CBVs (like LoginRequiredMixin for authentication)
+- Generic Views: Django's built-in views for CRUD operations
+
+Assessment Requirements Met:
+- LO2.2: CRUD functionality implementation
+- LO3.1: Role-based access control
+- LO3.3: Access control and permissions
+"""
+
+# === DJANGO CORE IMPORTS ===
+from django.shortcuts import render, get_object_or_404, redirect  # Common view utilities
+from django.contrib.auth.decorators import login_required  # Decorator for function views
+from django.contrib.auth.mixins import LoginRequiredMixin  # Mixin for class views  
+from django.contrib import messages  # Flash messages for user feedback
+from django.views.generic import (  # Generic class-based views for common patterns
+    ListView,      # For displaying lists of objects
+    DetailView,    # For displaying single object details
+    CreateView,    # For creating new objects
+    UpdateView,    # For editing existing objects
+    DeleteView,    # For deleting objects
+    TemplateView   # For simple template rendering
+)
+from django.urls import reverse_lazy  # URL reversing for class-based views
+from django.http import JsonResponse  # For AJAX responses
+from django.db.models import Q, Count  # Database query utilities
+
+# === LOCAL APP IMPORTS ===
+from .models import IncidentReport, IncidentType, IncidentComment  # Our custom models
+from .forms import IncidentReportForm, IncidentCommentForm  # Our custom forms
 
 
 class DashboardView(LoginRequiredMixin, TemplateView):
-    """Main dashboard showing incident statistics and recent reports"""
-    template_name = 'incidents/dashboard.html'
+    """
+    DASHBOARD VIEW - Main landing page for logged-in users
+    
+    This view displays key metrics and recent incidents for quick overview.
+    Uses Django's TemplateView for simple template rendering with context data.
+    
+    Features:
+    - Statistics cards (total, urgent, personal, pending incidents)
+    - Recent incidents list
+    - Quick action buttons
+    
+    Security: LoginRequiredMixin ensures only authenticated users can access
+    """
+    template_name = 'incidents/dashboard.html'  # HTML template to render
     
     def get_context_data(self, **kwargs):
+        """
+        Add custom data to template context
+        
+        Django automatically calls this method to gather data for the template.
+        We add statistics and recent incidents that the template can display.
+        
+        Returns:
+            dict: Context dictionary with statistics and incident data
+        """
+        # Call parent method to get base context (includes request, user, etc.)
         context = super().get_context_data(**kwargs)
         
-        # Get statistics for dashboard
+        # === DASHBOARD STATISTICS ===
+        # Count total incidents in database
         context['total_incidents'] = IncidentReport.objects.count()
+        
+        # Count high-priority incidents that need immediate attention
         context['urgent_incidents'] = IncidentReport.objects.filter(
-            severity__in=['high', 'critical']
+            severity__in=['high', 'critical']  # Django ORM filter for multiple values
         ).count()
+        
+        # Count incidents reported by current logged-in user
         context['my_incidents'] = IncidentReport.objects.filter(
-            reported_by=self.request.user
+            reported_by=self.request.user  # self.request.user is current user
         ).count()
+        
+        # Count incidents awaiting management review
         context['pending_incidents'] = IncidentReport.objects.filter(
             status__in=['submitted', 'under_review']
         ).count()
         
-        # Recent incidents
+        # === RECENT INCIDENTS LIST ===
+        # Get 5 most recent incidents for dashboard preview
+        # [:5] is Python slice notation for first 5 items
         context['recent_incidents'] = IncidentReport.objects.all()[:5]
         
-        return context
+        return context  # Return all context data to template
 
 
 class IncidentListView(LoginRequiredMixin, ListView):
