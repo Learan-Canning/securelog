@@ -1,0 +1,40 @@
+{
+  "name": "SecureLog - Incident Reporting System",
+  "description": "A Django-based staff incident reporting system for workplace safety management",
+  "repository": "https://github.com/Learan-Canning/securelog",
+  "keywords": ["python", "django", "incident-reporting", "safety", "heroku"],
+  "image": "heroku/python",
+  "buildpacks": [
+    {
+      "url": "heroku/python"
+    }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "addons": [
+    {
+      "plan": "heroku-postgresql:essential-0"
+    }
+  ],
+  "env": {
+    "DEBUG": {
+      "description": "Django debug mode",
+      "value": "False"
+    },
+    "SECRET_KEY": {
+      "description": "Django secret key",
+      "generator": "secret"
+    },
+    "ALLOWED_HOSTS": {
+      "description": "Allowed hosts for Django",
+      "value": ".herokuapp.com,localhost,127.0.0.1"
+    }
+  },
+  "scripts": {
+    "postdeploy": "python manage.py migrate && python manage.py collectstatic --noinput"
+  }
+}

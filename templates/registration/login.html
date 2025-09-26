@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - SecureLog{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card mt-5">
+                <div class="card-header text-center">
+                    <h3><i class="fas fa-sign-in-alt"></i> Staff Login</h3>
+                    <p class="text-muted">SecureLog Incident Reporting System</p>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        {% if form.errors %}
+                            <div class="alert alert-danger">
+                                {{ form.errors }}
+                            </div>
+                        {% endif %}
+                        
+                        <div class="form-group">
+                            <label for="{{ form.username.id_for_label }}">Username:</label>
+                            {{ form.username }}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.password.id_for_label }}">Password:</label>
+                            {{ form.password }}
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-block">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </button>
+                        
+                        <input type="hidden" name="next" value="{{ next }}" />
+                    </form>
+                    
+                    <div class="text-center mt-3">
+                        <p class="text-muted">Test Login: Username: Manager, Password: (as set)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
