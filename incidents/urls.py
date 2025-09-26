@@ -40,7 +40,11 @@ urlpatterns = [
     path('<int:pk>/edit/', views.IncidentUpdateView.as_view(), name='edit'),
     
     # Delete incident (DELETE operation)
-    path('<int:pk>/delete/', views.IncidentDeleteView.as_view(), name='delete'),
+    path(
+        '<int:pk>/delete/',
+        views.IncidentDeleteView.as_view(),
+        name='delete'
+    ),
     
     # === DASHBOARD AND USER-SPECIFIC PAGES ===
     # Main dashboard with statistics and recent incidents
@@ -53,7 +57,11 @@ urlpatterns = [
     # These URLs handle dynamic JavaScript requests without page reload
     
     # Update incident status via AJAX (for quick status changes)
-    path('ajax/update-status/<int:pk>/', views.update_status, name='update_status'),
+    path(
+        'ajax/update-status/<int:pk>/',
+        views.update_status,
+        name='update_status'
+    ),
     
     # Add comment to incident via AJAX (for real-time commenting)
     path('ajax/add-comment/<int:pk>/', views.add_comment, name='add_comment'),

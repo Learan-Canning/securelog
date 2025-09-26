@@ -97,7 +97,9 @@ class IncidentReportForm(forms.ModelForm):
         
         # Add help text
         self.fields['severity'].help_text = "How severe was this incident?"
-        self.fields['attachment'].help_text = "Upload photos or documents (optional)"
+        self.fields['attachment'].help_text = (
+            "Upload photos or documents (optional)"
+        )
 
 
 class IncidentCommentForm(forms.ModelForm):

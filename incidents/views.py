@@ -17,9 +17,9 @@ Assessment Requirements Met:
 """
 
 # === DJANGO CORE IMPORTS ===
-from django.shortcuts import render, get_object_or_404, redirect  # Common view utilities
-from django.contrib.auth.decorators import login_required  # Decorator for function views
-from django.contrib.auth.mixins import LoginRequiredMixin  # Mixin for class views  
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages  # Flash messages for user feedback
 from django.views.generic import (  # Generic class-based views for common patterns
     ListView,      # For displaying lists of objects
@@ -34,7 +34,7 @@ from django.http import JsonResponse  # For AJAX responses
 from django.db.models import Q, Count  # Database query utilities
 
 # === LOCAL APP IMPORTS ===
-from .models import IncidentReport, IncidentType, IncidentComment  # Our custom models
+from .models import IncidentReport, IncidentType, IncidentComment
 from .forms import IncidentReportForm, IncidentCommentForm  # Our custom forms
 
 

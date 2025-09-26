@@ -56,17 +56,17 @@ ALLOWED_HOSTS = config(
 # === APPLICATION CONFIGURATION ===
 INSTALLED_APPS = [
     # Django Built-in Apps (core functionality)
-    'django.contrib.admin',        # Admin interface at /admin/
-    'django.contrib.auth',         # User authentication system
-    'django.contrib.contenttypes', # Content type framework
-    'django.contrib.sessions',     # Session management
-    'django.contrib.messages',     # Flash messaging framework
-    'django.contrib.staticfiles',  # Static file handling (CSS, JS, images)
-    
+    'django.contrib.admin',         # Admin interface at /admin/
+    'django.contrib.auth',          # User authentication system
+    'django.contrib.contenttypes',  # Content type framework
+    'django.contrib.sessions',      # Session management
+    'django.contrib.messages',      # Flash messaging framework
+    'django.contrib.staticfiles',   # Static file handling (CSS, JS, images)
+
     # Third Party Apps (external packages)
-    'crispy_forms',        # Better form rendering
-    'crispy_bootstrap4',   # Bootstrap 4 integration for forms
-    
+    'crispy_forms',         # Better form rendering
+    'crispy_bootstrap4',    # Bootstrap 4 integration for forms
+
     # Local Apps (our custom applications)
     'incidents',  # Main incident reporting functionality
 ]
@@ -127,16 +127,28 @@ DATABASES['default'].update(db_from_env)
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'UserAttributeSimilarityValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'MinimumLengthValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'CommonPasswordValidator'
+        ),
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': (
+            'django.contrib.auth.password_validation.'
+            'NumericPasswordValidator'
+        ),
     },
 ]
 
