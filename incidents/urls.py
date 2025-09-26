@@ -23,8 +23,11 @@ app_name = 'incidents'
 
 urlpatterns = [
     # === MAIN CRUD PAGES ===
-    # Homepage - List all incidents (READ operation)
-    path('', views.IncidentListView.as_view(), name='list'),
+    # Homepage - Dashboard (better for staff application)
+    path('', views.DashboardView.as_view(), name='home'),
+    
+    # All incidents list
+    path('list/', views.IncidentListView.as_view(), name='list'),
     
     # Create new incident (CREATE operation)
     path('create/', views.IncidentCreateView.as_view(), name='create'),

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}My Incident Reports - SecureLog{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">
+                <i class="fas fa-user-clock"></i> 
+                My Incident Reports
+                <small class="text-muted">({{ incidents|length }} reports)</small>
+            </h1>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <a href="{% url 'incidents:create' %}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Create New Report
+            </a>
+            <a href="{% url 'incidents:home' %}" class="btn btn-info ml-2">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- My Reports List -->
+    {% if incidents %}
+        <div class="row">
+            {% for incident in incidents %}
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <!-- CUSTOMIZE THESE CARDS -->
+                    <div class="card h-100 {% if incident.is_urgent %}border-danger{% endif %}">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="badge badge-{{ incident.incident_type.color_code|default:'primary' }}">
+                                {{ incident.incident_type }}
+                            </span>
+                            <small class="text-muted">
+                                {{ incident.date_occurred|date:"M d" }}
+                            </small>
+                        </div>
+                        
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{% url 'incidents:detail' incident.pk %}" class="text-decoration-none">
+                                    {{ incident.title }}
+                                </a>
+                            </h5>
+                            
+                            <p class="card-text text-muted small">
+                                {{ incident.description|truncatewords:10 }}
+                            </p>
+                            
+                            <div class="mb-2">
+                                <span class="badge badge-{{ incident.severity_color }}">
+                                    {{ incident.get_severity_display }}
+                                </span>
+                                <span class="badge badge-{{ incident.status_color }} ml-1">
+                                    {{ incident.get_status_display }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="card-footer">
+                            <div class="btn-group btn-group-sm w-100" role="group">
+                                <a href="{% url 'incidents:detail' incident.pk %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                                <a href="{% url 'incidents:edit' incident.pk %}" class="btn btn-outline-warning">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty State -->
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="fas fa-clipboard-list fa-5x text-muted mb-4"></i>
+                    <h3 class="text-muted">No incident reports yet</h3>
+                    <p class="text-muted mb-4">Create your first incident report to get started.</p>
+                    <a href="{% url 'incidents:create' %}" class="btn btn-success btn-lg">
+                        <i class="fas fa-plus"></i> Create First Report
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

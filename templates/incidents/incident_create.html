@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Create Incident Report - SecureLog{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="fas fa-plus-circle"></i> Create New Incident Report</h3>
+                    <p class="text-muted mb-0">Document a workplace incident for tracking and resolution</p>
+                </div>
+                
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <!-- CUSTOMIZE THIS FORM SECTION -->
+                        {{ form|crispy }}
+                        
+                        <div class="form-row mt-4">
+                            <div class="col">
+                                <button type="submit" class="btn btn-success btn-lg">
+                                    <i class="fas fa-save"></i> Submit Incident Report
+                                </button>
+                                <a href="{% url 'incidents:home' %}" class="btn btn-secondary btn-lg ml-2">
+                                    <i class="fas fa-times"></i> Cancel
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Help Section -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5><i class="fas fa-info-circle"></i> Reporting Guidelines</h5>
+                    <ul class="mb-0">
+                        <li>Provide as much detail as possible</li>
+                        <li>Include exact location and time</li>
+                        <li>Upload photos if safe to do so</li>
+                        <li>Report critical incidents immediately</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

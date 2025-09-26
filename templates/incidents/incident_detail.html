@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ incident.title }} - Incident Details - SecureLog{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Main Incident Details -->
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h3><i class="fas fa-clipboard-list"></i> Incident Report #{{ incident.id }}</h3>
+                    <div>
+                        <span class="badge badge-{{ incident.severity_color }} badge-lg">
+                            {{ incident.get_severity_display }}
+                        </span>
+                        <span class="badge badge-{{ incident.status_color }} badge-lg ml-1">
+                            {{ incident.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <!-- CUSTOMIZE THIS CONTENT SECTION -->
+                    <h4>{{ incident.title }}</h4>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong><i class="fas fa-tag"></i> Type:</strong><br>
+                            <span class="badge badge-info">{{ incident.incident_type }}</span>
+                        </div>
+                        <div class="col-md-6">
+                            <strong><i class="fas fa-calendar"></i> Date Occurred:</strong><br>
+                            {{ incident.date_occurred|date:"F d, Y \a\t g:i A" }}
+                        </div>
+                    </div>
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong><i class="fas fa-map-marker-alt"></i> Location:</strong><br>
+                            {{ incident.location }}
+                        </div>
+                        <div class="col-md-6">
+                            <strong><i class="fas fa-user"></i> Reported By:</strong><br>
+                            {{ incident.reported_by.get_full_name|default:incident.reported_by.username }}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <strong><i class="fas fa-file-alt"></i> Description:</strong><br>
+                        <div class="bg-light p-3 rounded">
+                            {{ incident.description|linebreaks }}
+                        </div>
+                    </div>
+                    
+                    {% if incident.people_involved %}
+                    <div class="mb-3">
+                        <strong><i class="fas fa-users"></i> People Involved:</strong><br>
+                        {{ incident.people_involved|linebreaks }}
+                    </div>
+                    {% endif %}
+                    
+                    {% if incident.immediate_action_taken %}
+                    <div class="mb-3">
+                        <strong><i class="fas fa-first-aid"></i> Immediate Actions Taken:</strong><br>
+                        <div class="bg-success text-white p-3 rounded">
+                            {{ incident.immediate_action_taken|linebreaks }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="card-footer">
+                    <div class="btn-group" role="group">
+                        {% if incident.reported_by == user or user.is_staff %}
+                            <a href="{% url 'incidents:edit' incident.pk %}" class="btn btn-warning">
+                                <i class="fas fa-edit"></i> Edit Report
+                            </a>
+                        {% endif %}
+                        
+                        <a href="{% url 'incidents:list' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to List
+                        </a>
+                        
+                        <a href="{% url 'incidents:home' %}" class="btn btn-primary">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <!-- CUSTOMIZE THIS SIDEBAR -->
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle"></i> Incident Info</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Report ID:</strong> #{{ incident.id }}</p>
+                    <p><strong>Created:</strong> {{ incident.created_at|date:"M d, Y g:i A" }}</p>
+                    <p><strong>Days Since Reported:</strong> {{ incident.days_since_reported }}</p>
+                    
+                    {% if incident.is_urgent %}
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <strong>URGENT INCIDENT</strong><br>
+                            Requires immediate attention
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
