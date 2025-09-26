@@ -1,1 +1,0 @@
-web: gunicorn securelog_project.wsgi:application --log-file -
