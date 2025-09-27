@@ -22,9 +22,12 @@ from . import views  # Import our view classes and functions
 app_name = 'incidents'
 
 urlpatterns = [
-    # === MAIN CRUD PAGES ===
-    # Homepage - Dashboard (better for staff application)
-    path('', views.DashboardView.as_view(), name='home'),
+    # === MAIN PAGES ===
+    # Homepage - Your custom landing page (public access)
+    path('', views.HomePageView.as_view(), name='home'),
+    
+    # Dashboard - Staff login required
+    path('dashboard/', views.DashboardView.as_view(), name='dashboard'),
     
     # All incidents list
     path('list/', views.IncidentListView.as_view(), name='list'),

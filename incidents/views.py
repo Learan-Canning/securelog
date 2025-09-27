@@ -38,6 +38,16 @@ from .models import IncidentReport, IncidentType, IncidentComment
 from .forms import IncidentReportForm, IncidentCommentForm  # Our custom forms
 
 
+class HomePageView(TemplateView):
+    """
+    HOMEPAGE VIEW - Public landing page (no login required)
+    
+    This is your blank canvas for practicing HTML/CSS!
+    Users see this first, then login to access the dashboard.
+    """
+    template_name = 'index.html'
+
+
 class DashboardView(LoginRequiredMixin, TemplateView):
     """
     DASHBOARD VIEW - Main landing page for logged-in users
