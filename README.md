@@ -7,13 +7,4 @@ A secure web application for  Security staff  to report, track, and manage Incid
 
 
 
-## Getting Started
-1. Clone the repository
-2. Set up virtual environment: `python -m venv venv`
-3. Activate environment: `venv\Scripts\activate` (Windows)
-4. Install dependencies: `pip install -r requirements.txt`
-5. Set up environment variables in `.env` file
-6. Run migrations: `python manage.py migrate`
-7. Create superuser: `python manage.py createsuperuser`
-8. Start server: `python manage.py runserver`
-
+Work in Progress..
